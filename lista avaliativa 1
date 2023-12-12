@@ -6,15 +6,16 @@
 #include <ctype.h>
 
 #define MAX_NOME 50
+#define MAX_ALBUM 100
 
 typedef struct 
 {
     char nome[MAX_NOME];
     char genero[MAX_NOME];
     char local[MAX_NOME];
-    char **albums;
+    char **albuns;
 
-    int num_albums;
+    int num_albuns;
 
 } Artista;
 
@@ -79,24 +80,24 @@ int main()
                   novoArtista.local[strcspn(novoArtista.local, "\n")] = '\0';
               
                 printf("Número de álbuns: ");
-                scanf("%d", &novoArtista.num_albums);
+                scanf("%d", &novoArtista.num_albuns);
                 
                 getchar();
 
-                if (novoArtista.num_albums > 0) 
+                if (novoArtista.num_albuns > 0) 
                 {
-                    novoArtista.albums = (char **)malloc(novoArtista.num_albums * sizeof(char *));
+                    novoArtista.albuns = (char **)malloc(novoArtista.num_albuns * sizeof(char *));
                   
-                    for (int i = 0; i < novoArtista.num_albums; i++) 
+                    for (int i = 0; i < novoArtista.num_albuns; i++) 
                     {
-                        novoArtista.albums[i] = (char *)malloc(50 * sizeof(char *));
+                        novoArtista.albuns[i] = (char *)malloc(50 * sizeof(char *));
                         printf("Álbum %d: ", i + 1);
-                        fgets(novoArtista.albums[i], 50, stdin);
-                        novoArtista.albums[i][strcspn(novoArtista.albums[i], "\n")] = '\0';
+                        fgets(novoArtista.albuns[i], 50, stdin);
+                        novoArtista.albuns[i][strcspn(novoArtista.albuns[i], "\n")] = '\0';
                     }
                 } else {
                   
-                    novoArtista.albums = NULL;
+                    novoArtista.albuns = NULL;
                   
                 }
                 implementarArtista(&artistas, &numArtistas, novoArtista);
@@ -178,13 +179,13 @@ int main()
 
     for (int i = 0; i < numArtistas; i++) 
     {
-        if (artistas[i].albums != NULL) 
+        if (artistas[i].albuns != NULL) 
         {
-            for (int j = 0; j < artistas[i].num_albums; j++) 
+            for (int j = 0; j < artistas[i].num_albuns; j++) 
             {
-                free(artistas[i].albums[j]);
+                free(artistas[i].albuns[j]);
             }
-            free(artistas[i].albums);
+            free(artistas[i].albuns);
         }
     }
     free(artistas);
@@ -210,7 +211,7 @@ void consultarArtistas(char *nomeArquivo, Artista **lista, int *numArtistas)
 
     char linha[70];
   
-    int numAlbums = 0;
+    int numAlbuns = 0;
   
     while (fgets(linha, sizeof(linha), arquivo)) 
     {
@@ -222,10 +223,10 @@ void consultarArtistas(char *nomeArquivo, Artista **lista, int *numArtistas)
                 *lista = (Artista *)realloc(*lista, numArtistasMax * sizeof(Artista));
               
             }
-            (*lista)[*numArtistas].albums = NULL;
-            (*lista)[*numArtistas].num_albums = numAlbums;
+            (*lista)[*numArtistas].albuns = NULL;
+            (*lista)[*numArtistas].num_albuns = numAlbuns;
           
-            numAlbums = 0;
+            numAlbuns = 0;
           
             (*numArtistas)++;
           
@@ -252,14 +253,14 @@ void consultarArtistas(char *nomeArquivo, Artista **lista, int *numArtistas)
               
                 case 0:
                   
-                    if (numAlbums == 0) 
+                    if (numAlbuns == 0) 
                     {
-                        (*lista)[*numArtistas - 1].albums = (char **)malloc(1 * sizeof(char *));
+                        (*lista)[*numArtistas - 1].albuns = (char **)malloc(1 * sizeof(char *));
                     } else {
-  (*lista)[*numArtistas - 1].albums = (char **)realloc((*lista)[*numArtistas - 1].albums,(numAlbums + 1) * sizeof(char *));
+  (*lista)[*numArtistas - 1].albuns = (char **)realloc((*lista)[*numArtistas - 1].albuns,(numAlbuns + 1) * sizeof(char *));
                     }
-                    (*lista)[*numArtistas - 1].albums[numAlbums] = strdup(linha);
-                    numAlbums++;
+                    (*lista)[*numArtistas - 1].albuns[numAlbuns] = strdup(linha);
+                    numAlbuns++;
                     break;
             }
         }
@@ -276,9 +277,9 @@ void marcarArtistas(Artista *lista, int numArtistas)
         printf("Local: %s\n", lista[i].local);
         printf("Álbum do artista:\n");
       
-        for (int j = 0; j < lista[i].num_albums; j++) 
+        for (int j = 0; j < lista[i].num_albuns; j++) 
         {
-            printf("- %s\n", lista[i].albums[j]);
+            printf("- %s\n", lista[i].albuns[j]);
         }
         printf("---------\n");
     }
@@ -326,7 +327,7 @@ void excluirArtista(Artista **lista, int *numArtistas, char *nome)
     }
     if (indiceRemocao != -1) 
     {
-        free((*lista)[indiceRemocao].albums);
+        free((*lista)[indiceRemocao].albuns);
       
         for (int i = indiceRemocao; i < *numArtistas - 1; i++) 
         {
@@ -374,21 +375,21 @@ void editarArtista(Artista *lista, int numArtistas, char *nome)
           lista[indiceEdicao].local[strcspn(lista[indiceEdicao].local, "\n")] = '\0';
       
         printf("Novo número de álbuns: ");
-        scanf("%d", &lista[indiceEdicao].num_albums);
+        scanf("%d", &lista[indiceEdicao].num_albuns);
       
         getchar();
 
-        if (lista[indiceEdicao].num_albums > 0) 
+        if (lista[indiceEdicao].num_albuns > 0) 
         {
-            for (int i = 0; i < lista[indiceEdicao].num_albums; i++) 
+            for (int i = 0; i < lista[indiceEdicao].num_albuns; i++) 
             {
                 printf("Álbum %d: ", i + 1);
               
-                fgets(lista[indiceEdicao].albums[i], 100, stdin);
-                  lista[indiceEdicao].albums[i][strcspn(lista[indiceEdicao].albums[i], "\n")] = '\0';
+                fgets(lista[indiceEdicao].albuns[i], 100, stdin);
+                  lista[indiceEdicao].albuns[i][strcspn(lista[indiceEdicao].albuns[i], "\n")] = '\0';
             }
         } else {
-            lista[indiceEdicao].albums = NULL;
+            lista[indiceEdicao].albuns = NULL;
         }
 
         printf("Artista editado com sucesso.\n");
@@ -417,16 +418,16 @@ int procurarArtBinario(Artista *lista, int numArtistas, char *nome)
     }
     return -1;
 }
-void procurarAlbumSequencial(Artista *lista, int numArtistas, char *album) 
+void procurarAlbunSequencial(Artista *lista, int numArtistas, char *album) 
 {
     int encontrados = 0;
     for (int i = 0; i < numArtistas; i++) {
-        for (int j = 0; j < lista[i].num_albums; j++) {
-            if (strstr(lista[i].albums[j], album) != NULL) {
+        for (int j = 0; j < lista[i].num_albuns; j++) {
+            if (strstr(lista[i].albuns[j], album) != NULL) {
                 if (encontrados == 0) {
                     printf("Álbuns identificado:\n");
                 }
-                printf("- %s (%s)\n", lista[i].albums[j], lista[i].nome);
+                printf("- %s (%s)\n", lista[i].albuns[j], lista[i].nome);
                 encontrados++;
             }
         }
