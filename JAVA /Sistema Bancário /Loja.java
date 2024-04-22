@@ -15,11 +15,15 @@ class Loja {
     }
 
     public void adicionarFuncionario(Funcionario funcionario) {
-        funcionarios.add(funcionario);
+        synchronized (funcionarios) {
+            funcionarios.add(funcionario);
+        }
     }
 
     public List<Funcionario> getFuncionarios() {
-        return funcionarios;
+        synchronized (funcionarios) {
+            return new ArrayList<>(funcionarios);
+        }
     }
 
     public Conta getConta() {
