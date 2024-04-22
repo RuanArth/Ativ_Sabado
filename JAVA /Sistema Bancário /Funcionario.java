@@ -3,11 +3,11 @@ package sistemabancario;
 import java.util.Random;
 
 class Funcionario extends Thread {
-    private String nome;
-    private Loja loja;
-    private Banco banco;
-    private Conta contaSalario;
-    private Conta contaInvestimento;
+    private final String nome;
+    private final Loja loja;
+    private final Banco banco;
+    private final Conta contaSalario;
+    private final Conta contaInvestimento;
 
     public Funcionario(String nome, Loja loja, Banco banco) {
         this.nome = nome;
@@ -18,15 +18,11 @@ class Funcionario extends Thread {
     }
 
     public void receberSalario() {
-        synchronized (contaSalario) {
-            double salario = 1400.0;
-            contaSalario.depositar(salario);
-            double valorInvestimento = salario * 0.20;
-            synchronized (contaInvestimento) {
-                contaInvestimento.depositar(valorInvestimento);
-            }
-            System.out.println(nome + " recebeu o salário de R$ " + salario + " e investiu R$ " + valorInvestimento);
-        }
+        double salario = 1400.0;
+        contaSalario.depositar(salario);
+        double valorInvestimento = salario * 0.20;
+        contaInvestimento.depositar(valorInvestimento);
+        System.out.println(nome + " recebeu o salário de R$ " + salario + " e investiu R$ " + valorInvestimento);
     }
 
     public Conta getContaSalario() {
@@ -45,9 +41,7 @@ class Funcionario extends Thread {
                 if (loja.getConta().getSaldo() < 1400.0) {
                     System.out.println(nome + " está aguardando pagamento. Saldo atual: R$ " + loja.getConta().getSaldo());
                 } else {
-                    synchronized (loja) {
-                        loja.pagarFuncionarios();
-                    }
+                    loja.pagarFuncionarios(); // Chamada do método para pagar os funcionários
                     break;
                 }
             }
